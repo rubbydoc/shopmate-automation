@@ -11,3 +11,8 @@ export const TIMEOUTS = {
   medium: 10000,
   long: 30000,
 };
+
+export const PRODUCTS = {
+  searchTerm: 'Top',
+  firstProductName: 'Blue Top',
+};
