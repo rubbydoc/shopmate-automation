@@ -13,18 +13,20 @@ export class ProductsPage {
   readonly continueShoppingButton: Locator;
   readonly viewCartLink: Locator;
 
-  constructor(page: Page) {
-    this.page = page;
+ constructor(page: Page) {
+  this.page = page;
 
-    this.productsHeading = page.getByRole('heading', { name: 'All Products' });
-    this.searchInput = page.getByPlaceholder('Search Product');
-    this.searchButton = page.locator('#submit_search');
-    this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' });
-    this.productsList = page.locator('.productinfo');
-    this.firstProductAddToCart = page.locator('.productinfo').first().getByText('Add to cart');
-    this.continueShoppingButton = page.getByRole('button', { name: 'Continue Shopping' });
-    this.viewCartLink = page.getByRole('link', { name: 'View Cart' });
-  }
+  this.productsHeading = page.getByRole('heading', { name: 'All Products' });
+  this.searchInput = page.getByPlaceholder('Search Product');
+  this.searchButton = page.locator('#submit_search');
+  this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' });
+  this.productsList = page.locator('.productinfo');
+  this.firstProductAddToCart = page.locator('.productinfo').first().getByText('Add to cart');
+  this.continueShoppingButton = page.getByRole('button', { name: 'Continue Shopping' });
+
+  // Scope View Cart link inside the modal only — not the navbar
+  this.viewCartLink = page.locator('#cartModal').getByRole('link', { name: 'View Cart' });
+}
 
   // --- Actions ---
 
@@ -61,8 +63,11 @@ export class ProductsPage {
   }
 
   async addFirstProductAndViewCart() {
-    await this.firstProductAddToCart.click();
-    // After clicking, a modal appears — click View Cart
-    await this.viewCartLink.click();
-  }
+  await this.firstProductAddToCart.click();
+
+  // Wait for modal to appear, then click View Cart inside it
+  const modal = this.page.locator('#cartModal');
+  await expect(modal).toBeVisible();
+  await modal.getByRole('link', { name: 'View Cart' }).click();
+}
 }
