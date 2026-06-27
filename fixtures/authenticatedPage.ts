@@ -2,12 +2,14 @@ import { test as base } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { CartPage } from '../pages/CartPage';
+import { ApiHelper } from '../utils/apiHelper';
 
 // Define the shape of our custom fixtures
 type ShopMateFixtures = {
   loginPage: LoginPage;
   productsPage: ProductsPage;
   cartPage: CartPage;
+  apiHelper: ApiHelper;
 };
 
 // Extend Playwright's base test with our custom fixtures
@@ -29,6 +31,11 @@ export const test = base.extend<ShopMateFixtures>({
   cartPage: async ({ page }, use) => {
     const cartPage = new CartPage(page);
     await use(cartPage);
+  },
+
+  // Inject ApiHelper with the built-in Playwright request context
+  apiHelper: async ({ request }, use) => {
+    await use(new ApiHelper(request));
   },
 
 });
