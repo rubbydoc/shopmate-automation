@@ -41,7 +41,7 @@ jobs:
 
       # Step 7 — Run all tests using the saved session
       - name: Run all Playwright tests
-        run: npx playwright test --ignore=tests/auth.setup.ts
+        run: npx playwright test --ignore tests/auth.setup.ts
         env:
           CI: true
 
