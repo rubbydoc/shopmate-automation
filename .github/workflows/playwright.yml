@@ -1,55 +1,146 @@
 name: ShopMate Playwright Tests
 
 on:
+  # Trigger 1 — Run smoke tests on every push to main
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: [main]
+
+  # Trigger 2 — Run full regression every night at midnight UTC
+  schedule:
+    - cron: "0 0 * * *"
+
+  # Trigger 3 — Manual trigger with test type selection
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: "Which tests to run"
+        required: true
+        default: "smoke"
+        type: choice
+        options:
+          - smoke
+          - regression
+          - api
 
 jobs:
-  test:
-    timeout-minutes: 60
+  # ─────────────────────────────────────────
+  # JOB 1 — Smoke Tests (runs on every push)
+  # ─────────────────────────────────────────
+  smoke-tests:
+    name: Smoke Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Only run this job on push events, not on schedule or manual
+    if: github.event_name == 'push'
 
     steps:
-      # Step 1 — Check out the code
       - uses: actions/checkout@v4
 
-      # Step 2 — Set up Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # Step 3 — Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # Step 4 — Install Playwright browsers
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        run: npx playwright install --with-deps chromium
 
-      # Step 5 — Create the .auth directory
-      # Without this, the setup step has nowhere to save the session file
       - name: Create auth directory
         run: mkdir -p .auth
 
-      # Step 6 — Run auth setup first to generate the session file
       - name: Run auth setup
-        run: npx playwright test tests/auth.setup.ts
-        env:
-          CI: true
+        run: npx playwright test tests/auth.setup.ts --project=setup
 
-      # Step 7 — Run all tests using the saved session
-      - name: Run all Playwright tests
-        run: npx playwright test --ignore tests/auth.setup.ts
-        env:
-          CI: true
+      - name: Run smoke tests
+        run: npx playwright test --grep "@smoke" --project=chromium --project=chromium-public
 
-      # Step 8 — Upload test report so you can view results in GitHub
-      - name: Upload test report
+      - name: Upload smoke test report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report
+          name: smoke-test-report
+          path: playwright-report/
+          retention-days: 7
+
+  # ──────────────────────────────────────────────────
+  # JOB 2 — Full Regression (runs nightly on schedule)
+  # ──────────────────────────────────────────────────
+  regression-tests:
+    name: Full Regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    # Only run on schedule or when manually triggered with regression
+    if: |
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.test_type == 'regression')
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Create auth directory
+        run: mkdir -p .auth
+
+      - name: Run auth setup
+        run: npx playwright test tests/auth.setup.ts --project=setup
+
+      - name: Run full regression
+        run: npx playwright test --grep "@regression"
+
+      - name: Upload regression report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: regression-test-report
           path: playwright-report/
           retention-days: 30
+
+  # ──────────────────────────────────────────────────────────
+  # JOB 3 — API Tests (runs on manual trigger only)
+  # ──────────────────────────────────────────────────────────
+  api-tests:
+    name: API Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Only run when manually triggered with api
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.test_type == 'api'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Create auth directory
+        run: mkdir -p .auth
+
+      - name: Run auth setup
+        run: npx playwright test tests/auth.setup.ts --project=setup
+
+      - name: Run API tests
+        run: npx playwright test --grep "@api" --project=chromium
+
+      - name: Upload API test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-test-report
+          path: playwright-report/
+          retention-days: 7
