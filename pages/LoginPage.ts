@@ -14,18 +14,18 @@ export class LoginPage {
   readonly loggedInUsername: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+  this.page = page;
 
-    // Scope all login locators inside the login form section only
-    const loginForm = page.locator('.login-form');
+  // Scope to the login section using a more reliable selector
+  const loginForm = page.locator('div').filter({ hasText: 'Login to your account' }).first();
 
-    this.loginHeading = page.getByRole('heading', { name: 'Login to your account' });
-    this.emailInput = loginForm.getByPlaceholder('Email Address');
-    this.passwordInput = loginForm.getByPlaceholder('Password');
-    this.loginButton = loginForm.getByRole('button', { name: 'Login' });
-    this.errorMessage = page.getByText('Your email or password is incorrect!');
-    this.loggedInUsername = page.getByText('Logged in as');
-  }
+  this.loginHeading = page.getByRole('heading', { name: 'Login to your account' });
+  this.emailInput = page.getByPlaceholder('Email Address').first();
+  this.passwordInput = page.getByPlaceholder('Password');
+  this.loginButton = page.getByRole('button', { name: 'Login' });
+  this.errorMessage = page.getByText('Your email or password is incorrect!');
+  this.loggedInUsername = page.getByText('Logged in as');
+}
   // --- Actions ---
   // These are reusable steps that tests can call
 
