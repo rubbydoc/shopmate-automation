@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { NAV_OPTIONS } from '../utils/constants';
 
 export class ProductsPage {
   readonly page: Page;
@@ -31,9 +32,8 @@ export class ProductsPage {
   // --- Actions ---
 
   async navigate() {
-    await this.page.goto('/products');
+    await this.page.goto('/products', NAV_OPTIONS);
   }
-
   async assertProductsPageVisible() {
     await expect(this.productsHeading).toBeVisible();
   }

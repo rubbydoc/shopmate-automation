@@ -16,3 +16,8 @@ export const PRODUCTS = {
   searchTerm: 'Top',
   firstProductName: 'Blue Top',
 };
+
+export const NAV_OPTIONS = {
+  waitUntil: (process.env.CI ? 'domcontentloaded' : 'load') as 'domcontentloaded' | 'load',
+  timeout: 60000,
+};

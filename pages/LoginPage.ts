@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { NAV_OPTIONS } from '../utils/constants';
 
 export class LoginPage {
   // The Playwright page object — represents the browser tab
@@ -14,23 +15,23 @@ export class LoginPage {
   readonly loggedInUsername: Locator;
 
   constructor(page: Page) {
-  this.page = page;
+    this.page = page;
 
-  // Scope to the login section using a more reliable selector
-  const loginForm = page.locator('div').filter({ hasText: 'Login to your account' }).first();
+    // Scope to the login section using a more reliable selector
+    const loginForm = page.locator('div').filter({ hasText: 'Login to your account' }).first();
 
-  this.loginHeading = page.getByRole('heading', { name: 'Login to your account' });
-  this.emailInput = page.getByPlaceholder('Email Address').first();
-  this.passwordInput = page.getByPlaceholder('Password');
-  this.loginButton = page.getByRole('button', { name: 'Login' });
-  this.errorMessage = page.getByText('Your email or password is incorrect!');
-  this.loggedInUsername = page.getByText('Logged in as');
-}
+    this.loginHeading = page.getByRole('heading', { name: 'Login to your account' });
+    this.emailInput = page.getByPlaceholder('Email Address').first();
+    this.passwordInput = page.getByPlaceholder('Password');
+    this.loginButton = page.getByRole('button', { name: 'Login' });
+    this.errorMessage = page.getByText('Your email or password is incorrect!');
+    this.loggedInUsername = page.getByText('Logged in as');
+  }
   // --- Actions ---
   // These are reusable steps that tests can call
 
   async navigate() {
-    await this.page.goto('/login');
+    await this.page.goto('/login', NAV_OPTIONS);
   }
 
   async login(email: string, password: string) {
