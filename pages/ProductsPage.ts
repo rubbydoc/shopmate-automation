@@ -61,16 +61,19 @@ export class ProductsPage {
 
   async addFirstProductToCart() {
     await this.firstProductAddToCart.click();
-    // After clicking, a modal appears — click Continue Shopping
+
+    // Same fix for continue shopping flow
+    await expect(this.continueShoppingButton).toBeVisible({ timeout: 15000 });
     await this.continueShoppingButton.click();
   }
 
   async addFirstProductAndViewCart() {
     await this.firstProductAddToCart.click();
 
-    // Wait for modal to appear, then click View Cart inside it
     const modal = this.page.locator('#cartModal');
-    await expect(modal).toBeVisible();
+
+    // Wait for modal to finish its CSS animation and become visible
+    await expect(modal).toBeVisible({ timeout: 15000 });
     await modal.getByRole('link', { name: 'View Cart' }).click();
   }
 }
