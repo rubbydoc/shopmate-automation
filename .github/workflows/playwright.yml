@@ -3,19 +3,19 @@ name: ShopMate Playwright Tests
 on:
   # Trigger 1 — Run smoke tests on every push to main
   push:
-    branches: [main]
+    branches: [ main ]
 
   # Trigger 2 — Run full regression every night at midnight UTC
   schedule:
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'
 
   # Trigger 3 — Manual trigger with test type selection
   workflow_dispatch:
     inputs:
       test_type:
-        description: "Which tests to run"
+        description: 'Which tests to run'
         required: true
-        default: "smoke"
+        default: 'smoke'
         type: choice
         options:
           - smoke
@@ -31,7 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # Only run this job on push events, not on schedule or manual
-    if: github.event_name == 'push'
+    if: |
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.test_type == 'smoke')
 
     steps:
       - uses: actions/checkout@v4
@@ -113,7 +115,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # Only run when manually triggered with api
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.test_type == 'api'
+    if: |
+      github.event_name == 'workflow_dispatch' && github.event.inputs.test_type == 'api'
 
     steps:
       - uses: actions/checkout@v4
