@@ -45,20 +45,20 @@ test.describe('Combined API + UI Tests', () => {
 
     test('SHOPMATE-006c | API confirms user exists and UI reflects logged in state @smoke @regression', async ({ page, apiHelper }) => {
 
-        // Step 1 — API precondition check: verify user account exists
+        // Step 1 — API precondition check
         const userExists = await apiHelper.verifyUserExists(
             VALID_USER.email,
             VALID_USER.password
         );
         expect(userExists, 'User account must exist before running UI test').toBe(true);
 
-        // Step 2 — Navigate to homepage (session already authenticated)
-        await page.goto('/');
+        // Step 2 — Navigate with domcontentloaded instead of full load
+        // Faster and more reliable in CI — doesn't wait for ads/third-party scripts
+        await page.goto('/', { waitUntil: 'domcontentloaded', timeout: 60000 });
 
-        // Step 3 — Assert UI shows the logged in state
-        // No need to log in manually — storageState already handles this
-        await expect(page.getByText('Logged in as')).toBeVisible();
-        await expect(page.getByText(VALID_USER.name)).toBeVisible();
+        // Step 3 — Assert logged in state
+        await expect(page.getByText('Logged in as')).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText(VALID_USER.name)).toBeVisible({ timeout: 15000 });
     });
 
     test('SHOPMATE-006d | API + UI cart validation @regression', async ({ page, apiHelper, productsPage, cartPage }) => {

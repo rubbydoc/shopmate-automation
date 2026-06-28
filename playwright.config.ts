@@ -13,6 +13,8 @@ export default defineConfig({
 
   use: {
     baseURL: 'https://automationexercise.com',
+    navigationTimeout: 60000,  // add this
+    actionTimeout: 15000,       // add this
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'on-first-retry',
