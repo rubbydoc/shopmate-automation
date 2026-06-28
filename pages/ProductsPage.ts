@@ -41,15 +41,16 @@ export class ProductsPage {
   async searchProduct(productName: string) {
     await this.searchInput.fill(productName);
     await this.searchButton.click();
-    // Wait for the page to finish loading search results
-    await this.page.waitForLoadState('networkidle');
+    // Don't use networkidle — ads keep network busy forever on this site
+    // Instead wait for the results heading to appear directly
+    await expect(this.searchedProductsHeading).toBeVisible({ timeout: 15000 });
   }
 
   async assertSearchResultsVisible() {
-    // Give more time for search results to appear in CI
     await expect(this.searchedProductsHeading).toBeVisible({ timeout: 15000 });
     await expect(this.productsList.first()).toBeVisible({ timeout: 15000 });
   }
+
   async assertProductsListLoaded() {
     // Wait for at least one product to be visible
     await expect(this.productsList.first()).toBeVisible();
