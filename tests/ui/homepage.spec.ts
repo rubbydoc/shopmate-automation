@@ -6,7 +6,7 @@ test.describe('Homepage', () => {
     await page.goto('/');
   });
 
-  test('SHOPMATE-001 | should load the homepage successfully', async ({ page }) => {
+  test('SHOPMATE-001 | should load the homepage successfully @smoke @regression', async ({ page }) => {
     await expect(page).toHaveTitle(/Automation Exercise/);
     await expect(page.getByRole('img', { name: 'Website for automation practice' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();

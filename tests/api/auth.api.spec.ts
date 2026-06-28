@@ -3,7 +3,7 @@ import { VALID_USER } from '../../utils/constants';
 
 test.describe('Auth API', () => {
 
-  test('SHOPMATE-005d | POST verifyLogin with valid credentials returns success', async ({ apiHelper }) => {
+  test('SHOPMATE-005d | POST verifyLogin with valid credentials returns success @api @smoke @regression', async ({ apiHelper }) => {
     const response = await apiHelper.verifyLogin(
       VALID_USER.email,
       VALID_USER.password
@@ -18,7 +18,7 @@ test.describe('Auth API', () => {
     expect(body.message).toContain('User exists');
   });
 
-  test('SHOPMATE-005e | POST verifyLogin with invalid credentials returns error', async ({ apiHelper }) => {
+  test('SHOPMATE-005e | POST verifyLogin with invalid credentials returns error @api @regression', async ({ apiHelper }) => {
     const response = await apiHelper.verifyLoginWithInvalidDetails();
 
     expect(response.status()).toBe(200);
@@ -30,7 +30,7 @@ test.describe('Auth API', () => {
     expect(body.message).toContain('User not found');
   });
 
-  test('SHOPMATE-005f | POST verifyLogin with missing password returns error', async ({ apiHelper }) => {
+  test('SHOPMATE-005f | POST verifyLogin with missing password returns error @api @regression', async ({ apiHelper }) => {
     // Send request with empty password
     const response = await apiHelper.verifyLogin(VALID_USER.email, '');
 

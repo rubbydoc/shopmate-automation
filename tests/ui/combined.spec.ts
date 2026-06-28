@@ -3,7 +3,7 @@ import { VALID_USER } from '../../utils/constants';
 
 test.describe('Combined API + UI Tests', () => {
 
-    test('SHOPMATE-006a | API confirmed product count matches UI product count', async ({ apiHelper, productsPage }) => {
+    test('SHOPMATE-006a | API confirmed product count matches UI product count @regression', async ({ apiHelper, productsPage }) => {
 
         // Step 1 — Ask the API how many products exist
         const apiProductCount = await apiHelper.getProductCount();
@@ -21,7 +21,7 @@ test.describe('Combined API + UI Tests', () => {
         expect(uiProductCount).toBe(apiProductCount);
     });
 
-    test('SHOPMATE-006b | API product details match what UI displays', async ({ page, apiHelper }) => {
+    test('SHOPMATE-006b | API product details match what UI displays @regression', async ({ page, apiHelper }) => {
 
         // Step 1 — Get product #1 details from the API
         const apiProduct = await apiHelper.getProductById(1);
@@ -43,7 +43,7 @@ test.describe('Combined API + UI Tests', () => {
         ).toBeVisible();
     });
 
-    test('SHOPMATE-006c | API confirms user exists and UI reflects logged in state', async ({ page, apiHelper }) => {
+    test('SHOPMATE-006c | API confirms user exists and UI reflects logged in state @smoke @regression', async ({ page, apiHelper }) => {
 
         // Step 1 — API precondition check: verify user account exists
         const userExists = await apiHelper.verifyUserExists(
@@ -61,7 +61,7 @@ test.describe('Combined API + UI Tests', () => {
         await expect(page.getByText(VALID_USER.name)).toBeVisible();
     });
 
-    test('SHOPMATE-006d | API + UI cart validation', async ({ page, apiHelper, productsPage, cartPage }) => {
+    test('SHOPMATE-006d | API + UI cart validation @regression', async ({ page, apiHelper, productsPage, cartPage }) => {
 
         // Step 1 — API confirms product #1 exists and get its name
         const apiProduct = await apiHelper.getProductById(1);

@@ -15,16 +15,16 @@ test.describe('Products Feature', () => {
     await productsPage.assertProductsPageVisible();
   });
 
-  test('SHOPMATE-003a | products page loads with all products', async ({ page }) => {
+  test('SHOPMATE-003a | products page loads with all products @smoke @regression', async ({ page }) => {
     await productsPage.assertProductsListLoaded();
   });
 
-  test('SHOPMATE-003b | user can search for a product', async ({ page }) => {
+  test('SHOPMATE-003b | user can search for a product @regression', async ({ page }) => {
     await productsPage.searchProduct(PRODUCTS.searchTerm);
     await productsPage.assertSearchResultsVisible();
   });
 
-  test('SHOPMATE-003c | user can add a product to the cart', async ({ page }) => {
+  test('SHOPMATE-003c | user can add a product to the cart @smoke @regression', async ({ page }) => {
     // Add first product and go to cart
     await productsPage.addFirstProductAndViewCart();
 

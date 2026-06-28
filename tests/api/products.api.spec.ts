@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/authenticatedPage';
 
 test.describe('Products API', () => {
 
-  test('SHOPMATE-005a | GET all products returns 200 and product list', async ({ apiHelper }) => {
+  test('SHOPMATE-005a | GET all products returns 200 and product list @api @regression', async ({ apiHelper }) => {
     const response = await apiHelper.getAllProducts();
 
     // Assert the response status is 200 OK
@@ -18,7 +18,7 @@ test.describe('Products API', () => {
     expect(body.products.length).toBeGreaterThan(0);
   });
 
-  test('SHOPMATE-005b | GET all products response has correct product structure', async ({ apiHelper }) => {
+  test('SHOPMATE-005b | GET all products response has correct product structure @api @regression', async ({ apiHelper }) => {
     const response = await apiHelper.getAllProducts();
     const body = await response.json();
 
@@ -33,7 +33,7 @@ test.describe('Products API', () => {
     expect(firstProduct).toHaveProperty('category');
   });
 
-  test('SHOPMATE-005c | GET all brands returns 200 and brands list', async ({ apiHelper }) => {
+  test('SHOPMATE-005c | GET all brands returns 200 and brands list @api @regression', async ({ apiHelper }) => {
     const response = await apiHelper.getAllBrands();
 
     expect(response.status()).toBe(200);

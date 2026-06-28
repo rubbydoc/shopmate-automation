@@ -19,31 +19,37 @@ export default defineConfig({
   },
 
   projects: [
-    // Step 1 — Run auth setup first, before any tests
+    // Run auth setup first
     {
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
     },
 
-    // Step 2 — Run Chromium tests using the saved auth session
+    // Unauthenticated project — for login, homepage, registration tests
+    {
+      name: 'chromium-public',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: ['**/homepage.spec.ts', '**/login.spec.ts'],
+    },
+
+    // Authenticated project — for everything else
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        // Load the saved login session for every test
         storageState: '.auth/user.json',
       },
-      // Only run after setup is complete
+      testIgnore: ['**/homepage.spec.ts', '**/login.spec.ts'],
       dependencies: ['setup'],
     },
 
-    // Step 3 — Run Firefox tests using the same saved session
     {
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
         storageState: '.auth/user.json',
       },
+      testIgnore: ['**/homepage.spec.ts', '**/login.spec.ts'],
       dependencies: ['setup'],
     },
   ],
